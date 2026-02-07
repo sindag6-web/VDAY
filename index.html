@@ -29,7 +29,6 @@
     transition: opacity 2.5s ease-in-out;
     z-index: -3;
   }
-
   .bg-visible { opacity: 1; }
 
   .card {
@@ -70,7 +69,14 @@
   .heart { position: absolute; color: #ff4d6d; animation: float 4s linear infinite; }
   @keyframes float { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-800px); opacity: 0; } }
 
-  .message { font-size: 1.4rem; font-weight: bold; margin-top: 20px; }
+  .message {
+    position: absolute;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: black;
+    z-index: 5;
+    pointer-events: none;
+  }
   .hidden { display: none; }
 
   .shooting-star {
@@ -117,12 +123,38 @@ const backgroundImages = [
   'image1.jpg','image2.jpg','image3.jpg','image4.jpg','image5.jpg','image6.jpg'
 ];
 
+const funnyMessages = [
+  "Haha nope! Try again 😏",
+  "You can't escape love! ❤️",
+  "Pressing no is not an option! 😜",
+  "Come on, be nice! 😊",
+  "No? Really? 🤔",
+  "Love has other plans! 💘"
+];
+
+// MOVE NO BUTTON AND SHOW FUNNY MESSAGE
 noBtn.addEventListener('mouseover', () => {
-  const x = Math.random() * 300 - 150;
-  const y = Math.random() * 200 - 100;
-  noBtn.style.transform = `translate(${x}px, ${y}px)`;
+  const x = Math.random() * (window.innerWidth - 120);
+  const y = Math.random() * (window.innerHeight - 60);
+
+  noBtn.style.position = "absolute";
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+
+  showFunnyMessage(x, y);
 });
 
+function showFunnyMessage(x, y) {
+  const msg = document.createElement('div');
+  msg.className = 'message';
+  msg.innerText = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+  msg.style.left = (x + 20) + 'px';
+  msg.style.top = (y - 40) + 'px';
+  document.body.appendChild(msg);
+  setTimeout(() => msg.remove(), 2000);
+}
+
+// YES BUTTON LOGIC
 yesBtn.addEventListener('click', () => {
   response.classList.remove('hidden');
   noBtn.style.display = 'none';
@@ -133,6 +165,32 @@ yesBtn.addEventListener('click', () => {
   shrinkAndMoveCard();
 });
 
+// HEARTS
+function createHearts() {
+  setInterval(() => {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.innerText = '❤';
+    heart.style.left = Math.random() * window.innerWidth + 'px';
+    heart.style.bottom = '-20px';
+    heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 4000);
+  }, 150);
+}
+
+// SHOOTING STARS
+function createShootingStars() {
+  setInterval(() => {
+    const star = document.createElement('div');
+    star.className = 'shooting-star';
+    star.innerText = '⭐';
+    document.body.appendChild(star);
+    setTimeout(() => star.remove(), 8000);
+  }, 2000);
+}
+
+// BACKGROUND SLIDESHOW
 function startBackgroundSlideshow() {
   let index = 0;
   const bg1 = document.getElementById("bg1");
@@ -159,29 +217,7 @@ function startBackgroundSlideshow() {
   }, 6000);
 }
 
-function createHearts() {
-  setInterval(() => {
-    const heart = document.createElement('div');
-    heart.className = 'heart';
-    heart.innerText = '❤';
-    heart.style.left = Math.random() * window.innerWidth + 'px';
-    heart.style.bottom = '-20px';
-    heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 4000);
-  }, 150);
-}
-
-function createShootingStars() {
-  setInterval(() => {
-    const star = document.createElement('div');
-    star.className = 'shooting-star';
-    star.innerText = '⭐';
-    document.body.appendChild(star);
-    setTimeout(() => star.remove(), 8000);
-  }, 2000);
-}
-
+// SHRINK CARD
 function shrinkAndMoveCard() {
   card.style.padding = '20px 30px';
   card.style.maxWidth = '350px';
