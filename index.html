@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Will You Be My Valentine?</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #990000, #cc0000);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* BACKGROUND FADE LAYERS */
+  .bg-slide {
+    position: fixed;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 2.5s ease-in-out;
+    z-index: -3;
+  }
+
+  .bg-visible { opacity: 1; }
+
+  .card {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 40px 50px;
+    border-radius: 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    max-width: 500px;
+    position: absolute;
+    text-align: center;
+    z-index: 2;
+    transition: all 1s ease;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  h1 { font-size: 2.2rem; margin-bottom: 10px; font-weight: bold; }
+  .name { font-size: 2.6rem; font-weight: bold; margin-bottom: 25px; }
+
+  .buttons { margin-top: 20px; display: flex; justify-content: center; gap: 20px; }
+
+  button {
+    padding: 12px 26px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    font-weight: bold;
+  }
+
+  #yesBtn { background: #ff4d6d; color: white; }
+  #yesBtn:hover { transform: scale(1.15); background: #ff1e4d; }
+
+  #noBtn { background: #ddd; position: relative; }
+
+  .heart { position: absolute; color: #ff4d6d; animation: float 4s linear infinite; }
+  @keyframes float { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-800px); opacity: 0; } }
+
+  .message { font-size: 1.4rem; font-weight: bold; margin-top: 20px; }
+  .hidden { display: none; }
+
+  .shooting-star {
+    position: absolute;
+    font-size: 24px;
+    color: white;
+    transform: rotate(-45deg);
+    animation: shoot 8s linear infinite;
+  }
+
+  @keyframes shoot {
+    0% { top: -50px; left: 100%; opacity: 1; }
+    100% { top: 100%; left: -50px; opacity: 0; }
+  }
+</style>
+</head>
+
+<body>
+
+<div id="bg1" class="bg-slide"></div>
+<div id="bg2" class="bg-slide"></div>
+
+<div class="card" id="card">
+  <h1>Will you be my Valentine,</h1>
+  <div class="name">Starre? 💖</div>
+
+  <div class="buttons">
+    <button id="yesBtn">Yes!</button>
+    <button id="noBtn">No</button>
+  </div>
+
+  <div id="response" class="message hidden">I LOVE YOU 😍</div>
+  <audio id="loveMusic" src="music.mp3"></audio>
+</div>
+
+<script>
+const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
+const response = document.getElementById('response');
+const music = document.getElementById('loveMusic');
+const card = document.getElementById('card');
+
+const backgroundImages = [
+  'image1.jpg','image2.jpg','image3.jpg','image4.jpg','image5.jpg','image6.jpg'
+];
+
+noBtn.addEventListener('mouseover', () => {
+  const x = Math.random() * 300 - 150;
+  const y = Math.random() * 200 - 100;
+  noBtn.style.transform = `translate(${x}px, ${y}px)`;
+});
+
+yesBtn.addEventListener('click', () => {
+  response.classList.remove('hidden');
+  noBtn.style.display = 'none';
+  music.play();
+  createHearts();
+  createShootingStars();
+  startBackgroundSlideshow();
+  shrinkAndMoveCard();
+});
+
+function startBackgroundSlideshow() {
+  let index = 0;
+  const bg1 = document.getElementById("bg1");
+  const bg2 = document.getElementById("bg2");
+  let showingFirst = true;
+
+  bg1.style.backgroundImage = `url('${backgroundImages[index]}')`;
+  bg1.classList.add("bg-visible");
+
+  setInterval(() => {
+    index = (index + 1) % backgroundImages.length;
+
+    if (showingFirst) {
+      bg2.style.backgroundImage = `url('${backgroundImages[index]}')`;
+      bg2.classList.add("bg-visible");
+      bg1.classList.remove("bg-visible");
+    } else {
+      bg1.style.backgroundImage = `url('${backgroundImages[index]}')`;
+      bg1.classList.add("bg-visible");
+      bg2.classList.remove("bg-visible");
+    }
+
+    showingFirst = !showingFirst;
+  }, 6000);
+}
+
+function createHearts() {
+  setInterval(() => {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.innerText = '❤';
+    heart.style.left = Math.random() * window.innerWidth + 'px';
+    heart.style.bottom = '-20px';
+    heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 4000);
+  }, 150);
+}
+
+function createShootingStars() {
+  setInterval(() => {
+    const star = document.createElement('div');
+    star.className = 'shooting-star';
+    star.innerText = '⭐';
+    document.body.appendChild(star);
+    setTimeout(() => star.remove(), 8000);
+  }, 2000);
+}
+
+function shrinkAndMoveCard() {
+  card.style.padding = '20px 30px';
+  card.style.maxWidth = '350px';
+  card.style.bottom = '20px';
+  card.style.top = 'auto';
+  card.style.transform = 'translate(-50%, 0)';
+}
+</script>
+
+</body>
+</html>
